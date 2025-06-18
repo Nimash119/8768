@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сборка и ремонт ПК — Chief_119</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://images.unsplash.com/photo-1600486913747-55d5d07f9913?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background-color: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+    header {
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      text-align: center;
+    }
+    section {
+      padding: 20px;
+    }
+    .service, form {
+      background: rgba(0,0,0,0.7);
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .contact {
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      text-align: center;
+      border-top: 1px solid #333;
+    }
+    .contact a {
+      color: #03e9f4;
+      text-decoration: none;
+    }
+    .price {
+      color: #6aff5c;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      background: #03e9f4;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #02c3d4;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Сборка и ремонт ПК в Одессе</h1>
+    <p>Chief_119 — надёжный мастер у вас дома</p>
+  </header>
+
+  <section>
+    <div class="service">
+      <h2>💻 Сборка ПК</h2>
+      <p>Подбор оптимальных комплектующих под ваш бюджет и задачи (игры, работа, монтаж и т.д.).</p>
+      <p>Профессиональная сборка с аккуратной укладкой кабелей и проверкой всех компонентов.</p>
+      <p>Настройка BIOS, установка системы, тестирование на стабильность.</p>
+      <p class="price">от 450 грн</p>
+    </div>
+
+    <div class="service">
+      <h2>🛠 Ремонт и обслуживание</h2>
+      <p>Глубокая чистка от пыли: корпус, радиаторы, вентиляторы, блок питания.</p>
+      <p>Замена термопасты на процессоре и видеокарте.</p>
+      <p>Поиск и устранение неполадок: не включается, перегревается, зависает и т.п.</p>
+      <p>Замена/апгрейд комплектующих: оперативка, накопители, кулеры, БП и др.</p>
+      <p>Оптимизация и ускорение системы (чистка автозагрузки, обновление ПО).</p>
+      <p class="price">от 300 грн</p>
+    </div>
+
+    <div class="service">
+      <h2>⚙️ Настройка ПО</h2>
+      <p>Установка Windows, драйверов, антивируса, удаление вирусов.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 style="text-align:center">📝 Оставить отзыв или заявку</h2>
+    <form id="reviewForm">
+      <label for="name">Ваше имя:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="phone">Номер телефона:</label>
+      <input type="tel" id="phone" name="phone" required>
+
+      <label for="message">Опишите проблему или отзыв:</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+
+      <button type="submit">Отправить</button>
+    </form>
+  </section>
+
+  <section>
+    <h2 style="text-align:center">⭐ Отзывы клиентов</h2>
+    <div id="reviewsContainer"></div>
+  </section>
+
+  <div class="contact">
+    <p>📞 <a href="tel:+380969017431">+38 (096) 901‑74‑31</a></p>
+    <p>📨 <a href="https://t.me/Chief_119" target="_blank">@Chief_119</a></p>
+    <p>Все работы — на дому у клиента.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('reviewForm');
+    const reviewsContainer = document.getElementById('reviewsContainer');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const response = await fetch('server.php', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      if (result.success) {
+        loadReviews();
+        form.reset();
+      } else {
+        alert("Ошибка при отправке отзыва.");
+      }
+    });
+
+    async function loadReviews() {
+      const res = await fetch('reviews.json');
+      const reviews = await res.json();
+      reviewsContainer.innerHTML = reviews.reverse().map(r => `
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 10px; border-radius: 8px;">
+          <strong>${r.name}</strong> <small style="color:#aaa">(${r.phone})</small>
+          <p>${r.message}</p>
+        </div>
+      `).join('');
+    }
+
+    loadReviews();
+  </script>
+</body>
+</html>
